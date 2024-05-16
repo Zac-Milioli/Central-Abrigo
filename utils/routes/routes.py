@@ -8,13 +8,8 @@ app = Flask(__name__)
 
 class Routes():
 
-    # @app.route('/', methods=['GET'])
-    # def main_page(self):
-    #     return render_template('teste')
-
-
     @app.route('/abrigo', methods=['POST'])
-    def create_abrigo(self):
+    def create_abrigo():
         data = request.get_json()
         try:
             abrigo = Abrigo(endereco=data['endereco'], nome_responsavel=data['nome_responsavel'], cpf_responsavel=data['cpf_responsavel'],
@@ -28,7 +23,7 @@ class Routes():
     
 
     @app.route('/abrigo/<int:id_abrigo>', methods=['GET'])
-    def read_abrigo(self, id_abrigo):
+    def read_abrigo(id_abrigo):
         # Busque o abrigo pelo ID no banco de dados
         response = cursor.get_abrigo(id=id_abrigo)
         if response:
@@ -47,7 +42,7 @@ class Routes():
         
 
     @app.route('/abrigo/<int:id_abrigo>', methods=['PUT'])
-    def update_abrigo(self, id_abrigo):
+    def update_abrigo(id_abrigo):
         data = request.get_json()
         abrigo = Abrigo(endereco=data['endereco'], nome_responsavel=data['nome_responsavel'], cpf_responsavel=data['cpf_responsavel'],
                 telefone_responsavel=data['telefone_responsavel'], email=data['email'], ocupacao_maxima=data['ocupacao_maxima'], 
@@ -61,7 +56,7 @@ class Routes():
         
 
     @app.route('/abrigo/<int:id_abrigo>', methods=['DELETE'])
-    def delete_abrigo(self, id_abrigo):
+    def delete_abrigo(id_abrigo):
         # Delete o abrigo do banco de dados
         count = cursor.delete_abrigo(id=id_abrigo)
         if count > 0:
@@ -71,7 +66,7 @@ class Routes():
         
 
     @app.route('/estoque', methods=['POST'])
-    def create_produto(self):
+    def create_produto():
         data = request.get_json()
         try:
             mantimento = Mantimento(id_abrigo=data['id_abrigo'], id_produto=data['id_produto'], descricao_produto=data['descricao_produto'])
@@ -83,7 +78,7 @@ class Routes():
             
 
     @app.route('/estoque/<int:id_estoque>', methods=['GET'])
-    def read_produto(self, id_estoque):
+    def read_produto(id_estoque):
         # Busque o produto pelo ID no banco de dados
         response = cursor.get_mantimento(id=id_estoque)
         if response:
@@ -97,7 +92,7 @@ class Routes():
 
 
     @app.route('/estoque/<int:id_estoque>', methods=['PUT'])
-    def update_produto(self, id_estoque):
+    def update_produto(id_estoque):
         data = request.get_json()
         mantimento = Mantimento(id_abrigo=data['id_abrigo'], id_produto=data['id_produto'], descricao_produto=data['descricao_produto'])
         # Atualize o produto no estoque no banco de dados
@@ -109,7 +104,7 @@ class Routes():
         
 
     @app.route('/estoque/<int:id_estoque>', methods=['DELETE'])
-    def delete_produto(self, id_estoque):
+    def delete_produto(id_estoque):
         # Delete o produto do estoque do banco de dados
         count = cursor.delete_mantimento(id=id_estoque)
         if count > 0:
