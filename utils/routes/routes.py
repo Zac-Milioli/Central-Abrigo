@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from utils.cursor.cursor import *
+from utils.cursor.cursor import Cursor
 from utils.obj.abrigo import *
 from utils.obj.mantimento import *
 
