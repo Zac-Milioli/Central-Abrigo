@@ -1,8 +1,7 @@
 import sqlite3
 
-class Cursor(sqlite3):
-    def __init__(self, **args):
-        super().__init__(**args)
+class Cursor:
+    def __init__(self):
         connection = sqlite3.connect(r'db/live_peixe.sql')
         self.cursor = connection.cursor()
 
