@@ -1,16 +1,16 @@
-from flask import Flask, request, jsonify, render_template
-from utils.cursor.cursor import Cursor
-from utils.obj.abrigo import Abrigo
-from utils.obj.mantimento import Mantimento
+from flask import Flask, request, jsonify
+from utils.cursor.cursor import *
+from utils.obj.abrigo import *
+from utils.obj.mantimento import *
 
+cursor = Cursor()
+app = Flask(__name__)
 
 class Routes():
-    app = Flask(__name__)
 
-    @app.route('/', methods=['GET'])
-    def main_page(self):
-        self.cursor = Cursor()
-        return render_template('teste')
+    # @app.route('/', methods=['GET'])
+    # def main_page(self):
+    #     return render_template('teste')
 
 
     @app.route('/abrigo', methods=['POST'])
@@ -21,8 +21,7 @@ class Routes():
                             telefone_responsavel=data['telefone_responsavel'], email=data['email'], ocupacao_maxima=data['ocupacao_maxima'], 
                             ocupacao_animais=data['ocupacao_animais'], feminino=data['feminino'])
             # Insira o novo abrigo no banco de dados
-            query = f"INSERT INTO abrigo (endereco, nome_responsavel, cpf_responsavel, telefone_responsavel, email, ocupacao_maxima, ocupacao_animais, feminino) VALUES {abrigo.format_for_database()}"
-            self.cursor.execute(query)
+            cursor.insert_abrigo(values=abrigo.format_for_database())
             return jsonify({"message": "Abrigo criado com sucesso!"}), 201
         except:
             return jsonify({"message": "Erro ao criar abrigo"}), 500
@@ -31,19 +30,17 @@ class Routes():
     @app.route('/abrigo/<int:id_abrigo>', methods=['GET'])
     def read_abrigo(self, id_abrigo):
         # Busque o abrigo pelo ID no banco de dados
-        query = f"SELECT * FROM abrigo WHERE id_abrigo = {id_abrigo}"
-        self.cursor.execute(query)
-        abrigo = self.cursor.fetchone()
-        if abrigo:
+        response = cursor.get_abrigo(id=id_abrigo)
+        if response:
             return jsonify({
-                "endereco": abrigo[1],
-                "nome_responsavel": abrigo[2],
-                "cpf_responsavel": abrigo[3],
-                "telefone_responsavel": abrigo[4],
-                "email": abrigo[5],
-                "ocupacao_maxima": abrigo[6],
-                "ocupacao_animais": abrigo[7],
-                "feminino": abrigo[8]
+                "endereco": response[1],
+                "nome_responsavel": response[2],
+                "cpf_responsavel": response[3],
+                "telefone_responsavel": response[4],
+                "email": response[5],
+                "ocupacao_maxima": response[6],
+                "ocupacao_animais": response[7],
+                "feminino": response[8]
             })
         else:
             return jsonify({"message": "Abrigo não encontrado."}), 404
@@ -56,10 +53,8 @@ class Routes():
                 telefone_responsavel=data['telefone_responsavel'], email=data['email'], ocupacao_maxima=data['ocupacao_maxima'], 
                 ocupacao_animais=data['ocupacao_animais'], feminino=data['feminino'])
         # Atualize o abrigo no banco de dados
-        query = "UPDATE abrigo SET endereco = %s, nome_responsavel = %s, cpf_responsavel = %s, telefone_responsavel = %s, email = %s, ocupacao_maxima = %s, ocupacao_animais = %s, feminino = %s WHERE id_abrigo = %s"
-        self.cursor.execute(query, abrigo.format_for_database(id_abrigo=id_abrigo))
-        
-        if self.cursor.rowcount > 0:
+        count = cursor.update_abrigo(abrigo.format_for_database(id_abrigo=id_abrigo))
+        if count > 0:
             return jsonify({"message": "Abrigo atualizado com sucesso!"}), 200
         else:
             return jsonify({"message": "Abrigo não encontrado."}), 404
@@ -68,9 +63,8 @@ class Routes():
     @app.route('/abrigo/<int:id_abrigo>', methods=['DELETE'])
     def delete_abrigo(self, id_abrigo):
         # Delete o abrigo do banco de dados
-        query = "DELETE FROM abrigo WHERE id_abrigo = %s"
-        self.cursor.execute(query, id_abrigo)
-        if self.cursor.rowcount > 0:
+        count = cursor.delete_abrigo(id=id_abrigo)
+        if count > 0:
             return jsonify({"message": "Abrigo deletado com sucesso!"}), 200
         else:
             return jsonify({"message": "Abrigo não encontrado."}), 404
@@ -82,8 +76,7 @@ class Routes():
         try:
             mantimento = Mantimento(id_abrigo=data['id_abrigo'], id_produto=data['id_produto'], descricao_produto=data['descricao_produto'])
             # Insira o novo produto no estoque no banco de dados
-            query = f"INSERT INTO estoque (id_abrigo, id_produto, descricao_produto) VALUES {mantimento.format_for_database()}"
-            self.cursor.execute(query)
+            cursor.insert_mantimento(mantimento.format_for_database())
             return jsonify({"message": "Produto adicionado ao estoque com sucesso!"}), 201
         except:
             return jsonify({"message": "Falha ao adicionar produto ao estoque"}), 500
@@ -92,14 +85,12 @@ class Routes():
     @app.route('/estoque/<int:id_estoque>', methods=['GET'])
     def read_produto(self, id_estoque):
         # Busque o produto pelo ID no banco de dados
-        query = f"SELECT * FROM estoque WHERE id_estoque = {id_estoque}"
-        self.cursor.execute(query)
-        produto = self.cursor.fetchone()
-        if produto:
+        response = cursor.get_mantimento(id=id_estoque)
+        if response:
             return jsonify({
-                "id_abrigo": produto[1],
-                "id_produto": produto[2],
-                "descricao_produto": produto[3]
+                "id_abrigo": response[1],
+                "id_produto": response[2],
+                "descricao_produto": response[3]
             })
         else:
             return jsonify({"message": "Produto não encontrado."}), 404
@@ -110,10 +101,8 @@ class Routes():
         data = request.get_json()
         mantimento = Mantimento(id_abrigo=data['id_abrigo'], id_produto=data['id_produto'], descricao_produto=data['descricao_produto'])
         # Atualize o produto no estoque no banco de dados
-        query = "UPDATE estoque SET id_abrigo = %s, id_produto = %s, descricao_produto = %s WHERE id_estoque = %s"
-        self.cursor.execute(query, mantimento.format_for_database(id_estoque=id_estoque))
-        
-        if self.cursor.rowcount > 0:
+        count = cursor.update_mantimento(values=mantimento.format_for_database(id_estoque=id_estoque))
+        if count > 0:
             return jsonify({"message": "Produto atualizado com sucesso!"}), 200
         else:
             return jsonify({"message": "Produto não encontrado."}), 404
@@ -122,9 +111,8 @@ class Routes():
     @app.route('/estoque/<int:id_estoque>', methods=['DELETE'])
     def delete_produto(self, id_estoque):
         # Delete o produto do estoque do banco de dados
-        query = "DELETE FROM estoque WHERE id_estoque = %s"
-        self.cursor.execute(query, id_estoque)
-        if self.cursor.rowcount > 0:
+        count = cursor.delete_mantimento(id=id_estoque)
+        if count > 0:
             return jsonify({"message": "Produto deletado do estoque com sucesso!"}), 200
         else:
             return jsonify({"message": "Produto não encontrado."}), 404
