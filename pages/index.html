@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<htm lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central Abrigo</title>
+    <link rel="icon" href="images/favicon.jpg">
+
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <style>
+        body{
+            background-color: #F2F2F2;
+        }
+        img{
+            width: 150px;
+            height: 150px;
+        }
+        h1{
+            font-weight: 600;
+        }
+        h3{
+            font-family: 'Inter';
+            font-size: 50px;
+            font-weight: 600;
+        }
+        label{
+            font-family: 'Inter';
+            font-size: 24px;
+        }
+        .input-group{
+            font-family: 'Inter';
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .tabela{
+            text-align: center;
+            vertical-align: middle;
+        }
+        td, th{
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        var unidadebotao = "Medida";
+        var mantimentos_usados = [];
+    </script>
+
+    <div class="container">
+        <div class="row align-itens-center">
+            <div class="col-2"><img src="images/art2.png"></div>
+            <div class="col-4 mt-5"><h1>Central Abrigo</h1></div>
+        </div>
+        <br>
+        <div class="row my-4">
+            <div class="col"><h3>CADASTRO ESTOQUE</h3></div>
+        </div>
+        <div class="row">
+            <div class="col-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <label for="inputGroupSelect02"><b>Escolha o Mantimento</b></label>
+                            <div class="input-group my-2">
+                                <select class="form-select" id="inputGroupSelect02">
+                                    <option selected>Escolha o Mantimento...</option>
+                                    <option value="Comida">Comida</option>
+                                    <option value="Itens de Higiene">Itens de Higiene</option>
+                                    <option value="Água">Água</option>
+                                    <option value="Brinquedos">Brinquedos</option>
+                                    <option value="Colchões">Colchões</option>
+                                    <option value="Ração">Ração</option>
+                                    <option value="Roupas">Roupas</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="inputGroup-sizing-default1"><b>Quantidade do Item</b></label>
+                            <div class="input-group my-2">
+                                <input type="number" class="form-control" min="0">
+                                <button class="btn btn-outline-secondary dropdown-toggle" id="botao_unidade1" type="button" data-bs-toggle="dropdown" aria-expanded="false">Medida</button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><button class="dropdown-item" onclick="unidadebotao = mudarUnidade('Unidade(s)');">Unidade(s)</button></li>
+                                    <li><button class="dropdown-item" onclick="unidadebotao = mudarUnidade('Quilograma(s)');">Quilograma(s)</button></li>
+                                    <li><button class="dropdown-item" onclick="unidadebotao = mudarUnidade('Tonelada(s)');">Tonelada(s)</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="inputGroup-sizing-default2"><b>Estoque Ideal do Item</b></label>
+                            <div class="input-group my-2">
+                                <input type="number" class="form-control" min="0">
+                                <button class="btn btn-outline-secondary dropdown-toggle" id="botao_unidade2" type="button" data-bs-toggle="dropdown" aria-expanded="false">Medida</button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><button class="dropdown-item" onclick="unidadebotao = mudarUnidade('Unidade(s)');">Unidade(s)</button></li>
+                                    <li><button class="dropdown-item" onclick="unidadebotao = mudarUnidade('Quilograma(s)');">Quilograma(s)</button></li>
+                                    <li><button class="dropdown-item" onclick="unidadebotao = mudarUnidade('Tonelada(s)');">Tonelada(s)</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-4">
+                            <button type="button" class="btn btn-success px-5" onclick="adicionar();">Salvar</button>
+                        </div>
+                        <div class="col-4"></div>
+                        <div class="col-4">
+                            <button type="button" class="btn btn-danger px-5" onclick="limpar();">Limpar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1"></div>
+            <div class="col-6">
+                <div class="container">
+                    <div class="row">
+                        <table class="tabela table-striped table-bordered border-secondary">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="col-4">Tipo de Suprimento</th>
+                                    <th scope="col" class="col-4">Quantidade Atual</th>
+                                    <th scope="col" class="col-4">Quantidade Ideal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>         
+        </div>
+    </div>
+    
+    <script>
+        var tab = document.getElementsByTagName('tbody')[0];
+
+        function adicionar(){
+            const tipo = document.getElementById('inputGroupSelect02').value;
+            const qtd = document.getElementsByClassName('form-control')[0].value;
+            const ideal = document.getElementsByClassName('form-control')[1].value;
+
+            if (tab.rows.length <= 6 && tipo != 'Escolha o Mantimento...' && qtd != '' && ideal != '' && unidadebotao != 'Medida' && mantimentos_usados.indexOf(tipo) == -1){
+                
+                const newRow = tab.insertRow(tab.rows.length);
+                const newCell1 = newRow.insertCell(0);
+                const newCell2 = newRow.insertCell(1);
+                const newCell3 = newRow.insertCell(2);
+
+                newCell1.innerHTML = tipo;
+                newCell2.innerHTML = qtd + ' ' + unidadebotao;
+                newCell3.innerHTML = ideal + ' ' + unidadebotao;
+
+                mantimentos_usados.push(tipo);
+
+                limar();
+            }
+            else if (tipo == 'Escolha o Mantimento...'){
+                alert('Escolha um Tipo de Mantimento!');
+            }
+            else if (qtd == '' || ideal == ''){
+                alert('As duas quantidades devem ser preenchidas!');
+            }
+            else if (unidadebotao == 'Medida'){
+                alert('Escolha uma unidade de medida para os mantimentos!');
+            }
+            else if (mantimentos_usados.indexOf(tipo) != -1){
+                alert('Este mantimento já foi cadastrado!');
+            }
+            else {
+                alert('Você atingiu o limite de cadastros!');
+            }
+
+        }
+
+        function limpar(){
+            document.getElementById('inputGroupSelect02').value = 'Escolha o Mantimento...';
+            document.getElementsByClassName('form-control')[0].value = '';
+            document.getElementsByClassName('form-control')[1].value = '';
+            document.getElementById('botao_unidade1').innerHTML = 'Medida';
+            document.getElementById('botao_unidade2').innerHTML = 'Medida';
+            unidadebotao = 'Medida';
+        }
+
+        function mudarUnidade(qualBotao){
+            document.getElementById('botao_unidade1').innerHTML = qualBotao;
+            document.getElementById('botao_unidade2').innerHTML = qualBotao;
+
+            return qualBotao;
+        }
+    </script>
+</body>
+</html>
