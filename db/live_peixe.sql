@@ -17,6 +17,3 @@ CREATE TABLE estoque (
     descricao_produto VARCHAR(255),
     FOREIGN KEY (id_abrigo) REFERENCES abrigo(id_abrigo)
 );
-
-select * from abrigo;
-select * from estoque;
